@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Survaider_Task</title>
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: left;
+}
+</style>
+
+    <script type="text/javascript">
+          $(document).ready(function(){
+ var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://localhost:9002/getdataByFilter",
+  "method": "GET",
+  "headers": {
+    "cache-control": "no-cache",
+    "Postman-Token": "8a28e00a-8171-4817-84a6-6c952e36204d"
+  }
+}
+
+$.ajax(settings).done(function (response) {
+json2table(response.data);
+
+});
+
+
+});
+      </script>
+    <script type="text/javascript">
+        function json2table(myjson) {
+
+        // for header
+        var col = [];
+        for (var i = 0; i < myjson.length; i++) {
+            for (var key in myjson[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // create dynamic table
+        var table = document.createElement("table");
+
+        // creating table raw
+
+        var tr = table.insertRow(-1);
+
+        for (var i = 0; i < col.length; i++) {
+            // table header
+            var th = document.createElement("th");
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // adding json data into table raw
+        for (var i = 0; i < myjson.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = myjson[i][col[j]];
+            }
+        }
+
+        // container which hold the table
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+
+        //appending table into container
+        divContainer.appendChild(table);
+
+    }
+
+    function getdatabyfilter(){
+    var gender = $('#gender :selected').text();
+    var relation = $('#relation :selected').text();
+    var race = $('#race :selected').text();
+
+
+var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://localhost:9002/getdataByFilter?sex=" + gender + "&race=" + race + "&relationship="+ relation,
+  "method": "GET",
+  "headers": {
+    "cache-control": "no-cache",
+    "Postman-Token": "d00a7e15-9b91-4fee-8188-50b675c3fee7"
+  }
+}
+
+$.ajax(settings).done(function (response) {
+  if (response.data.length > 0){
+  json2table(response.data);}
+  else {
+ var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "There is no data for this matching selection";
+
+
+  }
+});
+}
+    </script>
+</head>
+<body>
+<div>
+
+
+          <div id="a" style="display: inline-block;">
+              <select id="gender">
+  <option value="volvo">Male</option>
+  <option value="saab">Female</option>
+
+</select>
+          </div>
+          <div id="b" style="display: inline-block;">
+              <select id="race">
+  <option value="white">White</option>
+  <option value="Black">Black</option>
+  <option value="Asian-Pac-Islander">Asian-Pac-Islander</option>
+  <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
+  <option value="Other">Other</option>
+</select>
+          </div>
+    <div id="c" style="display: inline-block;">
+              <select id="relation">
+  <option value="Husband">Husband</option>
+  <option value="Wife">Wife</option>
+  <option value="Not-in-family">Not-in-family</option>
+  <option value="Unmarried">Unmarried</option>
+  <option value="Own-child">Own-child</option>
+
+<option value="audi">Other-relative</option>
+
+</select>
+          </div>
+    <div id="d" style="display: inline-block;">
+        <input type="button" name="search" value="search" onclick="getdatabyfilter()">
+    </div>
+      </div>
+</div>
+<div id="showData">
+</div>
+</body>
+</html>

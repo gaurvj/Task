@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script type="text/javascript">
+          $(document).ready(function(){
+ var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://localhost:9002/chartData",
+  "method": "GET",
+  "headers": {
+    "cache-control": "no-cache",
+    "Postman-Token": "8a28e00a-8171-4817-84a6-6c952e36204d"
+  }
+}
+
+$.ajax(settings).done(function (response) {
+ document.getElementById("series_chart_div1").innerHTML = JSON.stringify(response.chart1_data);
+  document.getElementById("series_chart_div2").innerHTML = JSON.stringify(response.chart2_data);
+
+
+});
+});
+      </script>
+
+    <script type="text/javascript">
+
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawSeriesChart1);
+      google.charts.setOnLoadCallback(drawSeriesChart2);
+
+    function drawSeriesChart1() {
+      var chart1_data = $('#series_chart_div1').html();
+
+      var chart1Json = JSON.parse(chart1_data);
+
+
+      var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Gender');
+        data.addColumn('number', 'Count');
+
+
+		for (var i = 0; i < chart1Json.length; i++) {
+			data.addRow([chart1Json[i].sex, chart1Json[i].count]);
+		}
+      var options = {
+        title: 'Distribution of number of males and females',
+        hAxis: {title: 'Count'},
+        vAxis: {title: 'Gender'},
+        bubble: {textStyle: {fontSize: 11}}
+      };
+
+      var chart1 = new google.visualization.ColumnChart(document.getElementById('series_chart_div1'));
+      $('#chart').show();
+      chart1.draw(data, options);
+
+    }
+
+    function drawSeriesChart2() {
+
+      var chart2_data = $('#series_chart_div2').html();
+
+      var chart2Json = JSON.parse(chart2_data);
+
+
+      var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Relationship');
+        data.addColumn('number', 'Count');
+
+
+		for (var i = 0; i < chart2Json.length; i++) {
+			data.addRow([chart2Json[i].relationship, chart2Json[i].count]);
+		}
+      var options = {
+        title: 'Number of people in each relationship status',
+        hAxis: {title: 'Count'},
+        vAxis: {title: 'Relationship'},
+        bubble: {textStyle: {fontSize: 11}}
+      };
+
+      var chart2 = new google.visualization.ColumnChart(document.getElementById('series_chart_div2'));
+      $('#chart').show();
+      chart2.draw(data, options);
+    }
+    </script>
+  </head>
+  <body>
+
+      <div id="chart" style="display :none;">
+          <div id="series_chart_div1" style="width: 400px; height: 400px; display: inline-block;"></div>
+      <div id="series_chart_div2" style="width: 400px; height: 400px; display: inline-block;"></div>
+      </div>
+
+
+
+  </body>
+</html>
